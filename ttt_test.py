@@ -63,12 +63,17 @@ def test_TicTacToe_check_draw(ttt):
     assert ttt.check_draw() == False
     for i in range(len(ttt.board.state)):
         ttt.board.add_piece(i)
+    assert ttt.check_draw() == False
+    ttt.board.state = ['X','O','X',
+                       'O','X','O',
+                       'O','X','O']
     assert ttt.check_draw() == True
     
 
     # switch_players
         # PlayerX >> PlayerO or vice versa
 def test_TicTacToe_switch_players(ttt):
+    ttt.player = ttt.playerX
     assert ttt.player.marker == 'X'
     ttt.switch_players()
     assert ttt.player.marker == 'O'
@@ -123,31 +128,15 @@ def test_Board_render():
         # ELSE
             # display error message
 def test_Board_add_piece(board):
-	board.add_piece(0)
+	board.add_piece(0, 'X')
 	assert board.state[0] != 0
 	  
-    # piece_location_valid?
-        # Is the placement within_valid_coordinates?
-        # Are the piece coordinates_available?
-def test_Board_piece_location_valid(board):
-	assert board.piece_location_valid(4) == True
-	assert board.piece_location_valid(-1) == False
+    # available_coordinates?
 
-    # within_valid_coordinates?
-        # UNLESS piece coords are in the acceptible range
-            # display an error message
-def test_Board_within_valid_coordinates(board):
-	assert board.within_valid_coordinates(0) == True
-	assert board.within_valid_coordinates(8) == True
-	assert board.within_valid_coordinates(9) == False
-	
-    # coordinates_available?
-        # UNLESS piece coords are not occupied
-            # display error message
-def test_Board_coordinates_available(board):
-	assert board.coordinates_available(0) == True
+def test_Board_available_coordinates(board):
+	assert board.available_coordinates() == [i for i in range(9)]
 	board.add_piece(0)
-	assert board.coordinates_available(0) == False
+	assert board.available_coordinates() == [i for i in range(1,9)]
 	
     # winning_combination?
         # is there a winning_diagonal?
@@ -162,47 +151,6 @@ def test_Board_winning_combination(board, fst, snd, trd):
     assert board.winning_combination() == False
     board.add_piece(snd)
     assert board.winning_combination() == True
-
-    # winning_diagonal?
-        # check if specified piece has a triplet across diagonals
-@pytest.mark.parametrize("fst, snd, trd", [
-    (0, 4, 8), (2, 4, 6),]) 
-def test_Board_winning_diagonal(board, fst, snd, trd):
-	board.add_piece(fst)
-	board.add_piece(trd)
-	assert board.winning_diagonal() == False
-	board.add_piece(snd)
-	assert board.winning_diagonal() == True
-    
-    # winning_vertical?
-        # check if specified piece has a triplet across verticals
-@pytest.mark.parametrize("fst, snd, trd", [
-    (0, 3, 6), (1, 4, 7), (2, 5, 8),])
-def test_Board_winning_vertical(board, fst, snd, trd):
-	board.add_piece(fst)
-	board.add_piece(trd)
-	assert board.winning_vertical() == False
-	board.add_piece(snd)
-	assert board.winning_vertical() == True
-
-    # winning_horizontal?
-        # check if specified piece has a triplet across horizontals
-@pytest.mark.parametrize("fst, snd, trd", [
-    (0, 1, 2), (3, 4, 5), (6, 7, 8),])
-def test_Board_winning_horizontal(board, fst, snd, trd):
-	board.add_piece(fst)
-	board.add_piece(trd)
-	assert board.winning_horizontal() == False
-	board.add_piece(snd)
-	assert board.winning_horizontal() == True
-    # diagonals
-        # return the diagonal pieces
-
-    # verticals
-        # return the vertical pieces
-
-    # horizontals
-        # return the horizontal pieces
 
     # full?
         # does every square contain a piece?
