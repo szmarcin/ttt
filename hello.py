@@ -1,1 +1,1 @@
-#repl.it
+replit
